@@ -1,0 +1,104 @@
+{
+  "name": "@coderrob/mcp-kernel",
+  "version": "0.1.0",
+  "description": "A type-safe application kernel for composing Model Context Protocol servers.",
+  "license": "GPL-3.0-only",
+  "author": "Robert Lindley",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=24.15.0"
+  },
+  "packageManager": "yarn@4.18.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Coderrob/mcp-kernel.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Coderrob/mcp-kernel/issues"
+  },
+  "homepage": "https://github.com/Coderrob/mcp-kernel#readme",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "typescript",
+    "server",
+    "tools",
+    "resources",
+    "prompts"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "architecture:check": "node scripts/check-source-layout.mjs && madge --circular --extensions ts src",
+    "build": "yarn clean && rollup -c",
+    "clean": "rimraf dist coverage",
+    "consumer:check": "tsc -p tsconfig.consumer.json --noEmit && node test/runtime-consumer.test.mjs",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "knip": "knip --treat-config-hints-as-errors",
+    "lint": "eslint . --max-warnings 0",
+    "package:check": "node scripts/verify-package.mjs",
+    "prepublishOnly": "yarn verify",
+    "publish:check": "yarn verify && npm publish --dry-run --ignore-scripts",
+    "test": "vitest run --coverage",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json --noEmit",
+    "verify": "yarn format:check && yarn lint && yarn typecheck && yarn architecture:check && yarn knip && yarn build && yarn test && yarn consumer:check && yarn package:check"
+  },
+  "peerDependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^3.25.0"
+  },
+  "dependencies": {
+    "pino": "^10.3.1",
+    "zod-to-json-schema": "^3.25.2"
+  },
+  "devDependencies": {
+    "@coderrob/eslint-plugin-zero-tolerance": "^1.2.6",
+    "@eslint/js": "10.0.1",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@rollup/plugin-terser": "^1.0.0",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/node": "^24.13.5",
+    "@typescript-eslint/eslint-plugin": "^8.70.0",
+    "@typescript-eslint/parser": "^8.70.0",
+    "@vitest/coverage-v8": "^5.0.1",
+    "eslint": "10.10.0",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-import-x": "4.17.1",
+    "eslint-plugin-jsdoc": "64.5.2",
+    "eslint-plugin-simple-import-sort": "^14.0.0",
+    "eslint-plugin-sonarjs": "^4.2.1",
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "knip": "^6.36.0",
+    "madge": "^8.0.0",
+    "prettier": "^3.9.7",
+    "rimraf": "^6.1.3",
+    "rollup": "^4.63.3",
+    "rollup-plugin-dts": "^6.5.1",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1",
+    "zod": "^3.25.76"
+  }
+}

@@ -1,0 +1,19 @@
+site_name: MCP Kernel
+site_description: A TypeScript application kernel for Model Context Protocol servers.
+repo_url: https://github.com/Coderrob/mcp-kernel
+edit_uri: edit/main/docs/
+strict: true
+theme:
+  name: mkdocs
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Runtime and policies: runtime.md
+  - Development: development.md
+  - Audit: audit.md
+validation:
+  nav:
+    omitted_files: warn
+  links:
+    not_found: warn
+    anchors: warn

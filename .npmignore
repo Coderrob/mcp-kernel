@@ -1,0 +1,14 @@
+src/
+test/
+scripts/
+coverage/
+tsconfig*.json
+rollup.config.js
+vitest.config.mjs
+eslint.config.js
+knip.json
+.github/
+.yarn/
+*.log
+node_modules/
+.npm-cache/
