@@ -1,10 +1,10 @@
 export default {
   test: {
     environment: 'node',
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'scripts/**/*.test.mjs'],
     coverage: {
       provider: 'v8',
-      include: ['src/**/*.ts'],
+      include: ['src/**/*.ts', 'scripts/release.mjs'],
       exclude: ['src/**/*.test.ts', 'src/types/**'],
       thresholds: {
         perFile: true,

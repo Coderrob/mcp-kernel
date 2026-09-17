@@ -20,6 +20,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Added a manual release-PR workflow with major, minor, and revision choices, versioned changelog entries, and a fresh Unreleased section.
+- Added release preparation tests and an explicit `release:publish` command shared by the publishing workflow.
 - Added MkDocs user and contributor documentation with a strict CI build.
 - Added Windows CI verification alongside Linux.
 

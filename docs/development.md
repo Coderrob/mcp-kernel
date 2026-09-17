@@ -47,4 +47,24 @@ On Windows, replace `.venv/bin/python` with `.venv/Scripts/python.exe`. The gene
 
 `.github/workflows/ci.yml` runs on pull requests, pushes to `main`, and manual dispatch. It verifies the package on Linux and Windows and runs an npm publishing dry run. A separate Python job builds the documentation in strict mode. New pushes cancel superseded runs for the same ref.
 
-`.github/workflows/publish.yml` verifies and publishes on a published GitHub release using the `npm` environment and provenance. Repository administrators must configure npm trusted publishing and any environment protections. Update the package version and changelog before releasing. Local verification cannot validate hosted runner execution, npm account configuration, or environment approvals.
+### Prepare a release PR
+
+In GitHub, open **Actions → Create release PR → Run workflow**, select the default branch, and choose a version increment:
+
+| Selection  | Example from 1.2.3 |
+| ---------- | ------------------ |
+| `major`    | 2.0.0              |
+| `minor`    | 1.3.0              |
+| `revision` | 1.2.4              |
+
+The workflow updates `package.json`, assigns the Unreleased notes to the new dated version, updates comparison links, and adds a fresh empty Unreleased section. It refreshes the lockfile, runs `yarn verify`, and opens or updates the single `release/next` PR. Rerunning it before merge recalculates the release from the latest default branch. Empty Unreleased sections and malformed version or changelog data fail before either release file is changed.
+
+For local preparation, run `yarn release:prepare revision` (or `major`/`minor`), then `yarn install --mode=update-lockfile` and `yarn verify`. Preparation does not commit, tag, or publish. Continue adding changes to Unreleased after the release PR is merged.
+
+The repository must allow GitHub Actions to create pull requests under **Settings → Actions → General → Workflow permissions**. The release workflow grants write access only to repository contents and pull requests. PR workflows created with `GITHUB_TOKEN` may require a maintainer to approve their run; the release workflow validates the proposed changes before opening the PR. See [GitHub's workflow trigger rules](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow).
+
+### Publish the merged version
+
+After merging the release PR, publish a GitHub release tagged `vX.Y.Z` at the merge commit. `.github/workflows/publish.yml` checks that the tag matches `package.json`, then runs `yarn release:publish` in the `npm` environment. Configure npm trusted publishing for this workflow and any desired environment protections.
+
+`yarn release:publish` runs the full verification suite and publishes with public access and provenance. It is intended for the configured GitHub publishing environment. The command uses `--ignore-scripts` after verification to avoid executing verification twice. Direct `npm publish` still runs the `prepublishOnly` verification hook. There is deliberately no script named `publish`: npm treats that name as a lifecycle hook, which could recursively call publication. `yarn publish:check` remains the non-publishing dry run.

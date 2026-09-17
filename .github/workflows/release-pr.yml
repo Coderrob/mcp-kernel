@@ -1,0 +1,68 @@
+name: Create release PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version increment (revision means patch)
+        required: true
+        default: revision
+        type: choice
+        options:
+          - major
+          - minor
+          - revision
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release-pr
+  cancel-in-progress: false
+
+jobs:
+  release-pr:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+      - run: corepack enable
+      - run: yarn install --immutable
+      - name: Prepare release files
+        id: release
+        env:
+          RELEASE_BUMP: ${{ inputs.bump }}
+        run: |
+          yarn release:prepare "$RELEASE_BUMP"
+          yarn install --mode=update-lockfile
+          version=$(node -p 'require("./package.json").version')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - run: yarn verify
+      - name: Open or update the release PR
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          branch: release/next
+          base: ${{ github.event.repository.default_branch }}
+          delete-branch: true
+          add-paths: |
+            package.json
+            CHANGELOG.md
+            yarn.lock
+          commit-message: "chore: prepare release v${{ steps.release.outputs.version }}"
+          title: "Release v${{ steps.release.outputs.version }}"
+          body: |
+            Prepare a **${{ inputs.bump }}** release at **v${{ steps.release.outputs.version }}**.
+
+            - Update the package version and lockfile.
+            - Assign the previous Unreleased notes to this dated version.
+            - Start a fresh Unreleased section for subsequent work.
+            - Run formatting, lint, type checks, build, tests with per-file coverage, and package checks.
+
+            After merging, publish a GitHub release tagged `v${{ steps.release.outputs.version }}` at the merge commit to trigger npm publishing.

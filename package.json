@@ -60,6 +60,8 @@
     "package:check": "node scripts/verify-package.mjs",
     "prepublishOnly": "yarn verify",
     "publish:check": "yarn verify && npm publish --dry-run --ignore-scripts",
+    "release:prepare": "node scripts/prepare-release.mjs",
+    "release:publish": "yarn verify && npm publish --access public --provenance --ignore-scripts",
     "test": "vitest run --coverage",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json --noEmit",
     "verify": "yarn format:check && yarn lint && yarn typecheck && yarn architecture:check && yarn knip && yarn build && yarn test && yarn consumer:check && yarn package:check"

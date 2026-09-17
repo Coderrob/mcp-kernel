@@ -67,6 +67,10 @@ corepack yarn publish:check
 
 Publishing is limited to `dist`, `README.md`, `CHANGELOG.md`, `LICENSE`, and package metadata. Releases are intended to follow semantic versioning; update `CHANGELOG.md` before tagging a release.
 
+To prepare a release, run **Actions → Create release PR → Run workflow** on `main` and choose `major`, `minor`, or `revision` (patch). The workflow versions the Unreleased notes, creates a fresh Unreleased section, verifies the package, and opens or updates the release PR. Merge it, then publish a GitHub release with the matching `vX.Y.Z` tag to trigger npm publishing.
+
+`yarn release:prepare revision` prepares the same files locally. `yarn release:publish` verifies and publishes the package with provenance from a configured publishing environment. See the [development guide](docs/development.md) for setup and command details.
+
 ## Documentation
 
 See the [documentation overview](docs/index.md), [runtime guide](docs/runtime.md), and [development guide](docs/development.md). Build the site with `python -m pip install -r requirements-docs.txt` and `python -m mkdocs build --strict`; preview it with `python -m mkdocs serve`.

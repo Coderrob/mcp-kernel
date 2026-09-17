@@ -24,13 +24,13 @@ The completed local checks passed:
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | Immutable Yarn install | Passed without lockfile changes                                                                                  |
 | `yarn verify`          | Formatting, lint, type checking, architecture, Knip, tests, build, consumer checks, and package allowlist passed |
-| Vitest                 | 46 tests across 12 files passed; all per-file coverage thresholds passed                                         |
+| Vitest                 | 71 tests across 13 files passed; all per-file coverage thresholds passed                                         |
 | Dependency audit       | `yarn npm audit --all --recursive` returned no audit suggestions                                                 |
 | MkDocs                 | Strict build passed                                                                                              |
 | Workflow files         | YAML parsed successfully with required trigger and job sections                                                  |
 
 The npm publishing dry run also passed with `--offline --ignore-scripts`; it included only the nine allowed package files and did not publish anything. Offline mode avoids a registry metadata lookup and does not validate publication credentials.
 
-The audit uses the repository verification suite, focused regression tests, an immutable dependency install, an npm publishing dry run, and a strict MkDocs build. Local checks establish behavior in the available Windows environment. Linux runner behavior and GitHub/npm account settings require a hosted workflow run after these changes are pushed.
+The audit uses the repository verification suite, focused regression tests, an immutable dependency install, an npm publishing dry run, and a strict MkDocs build. Local checks establish behavior in the available Windows environment. The initial implementation also passed hosted Linux, Windows, and documentation CI. Release preparation is covered by unit and CLI tests; publication credentials and repository permission changes are separate from these checks.
 
 Coverage measures exercised code, not the absence of all defects. In-memory policy state, cooperative cancellation, and transport-supplied identity remain deliberate runtime boundaries described in [Runtime and policies](runtime.md).
