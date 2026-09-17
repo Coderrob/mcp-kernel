@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- Preserve LF line endings on every checkout so formatting checks also pass on Windows CI.
 - Preserve strict tool schemas and apply SDK input transforms only once.
 - Isolate anonymous cache and rate-limit state from authenticated principal IDs.
 - Support undefined application contexts throughout invocation and disposal.
