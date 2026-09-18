@@ -12,8 +12,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
+import { InMemoryTransport } from '@modelcontextprotocol/server';
 import { describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 
@@ -57,13 +56,26 @@ function createRequestExtra(
   signal = new AbortController().signal
 ): SdkRequestExtra {
   return {
-    signal,
-    requestId: 'direct-request',
-    authInfo: scopes ? { token: 'test-token', clientId, scopes: [...scopes], extra: { tenant: 'test' } } : undefined,
-    sendNotification: async (): Promise<void> => undefined,
-    sendRequest: async (): Promise<never> => {
-      throw new Error('Nested requests are not supported by this test');
+    mcpReq: {
+      id: 'direct-request',
+      method: 'tools/call',
+      requestState: () => undefined,
+      signal,
+      notify: async (): Promise<void> => undefined,
+      send: async (): Promise<never> => {
+        throw new Error('Nested requests are not supported by this test');
+      },
+      log: async (): Promise<void> => undefined,
+      elicitInput: async (): Promise<never> => {
+        throw new Error('Elicitation is not supported by this test');
+      },
+      requestSampling: async (): Promise<never> => {
+        throw new Error('Sampling is not supported by this test');
+      },
     },
+    http: scopes
+      ? { authInfo: { token: 'test-token', clientId, scopes: [...scopes], extra: { tenant: 'test' } } }
+      : undefined,
   };
 }
 

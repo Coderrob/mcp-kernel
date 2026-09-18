@@ -12,19 +12,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
-import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol.js';
-import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import type {
   CallToolResult,
+  Client,
   GetPromptResult,
   ListResourcesResult,
   ReadResourceResult,
-  ServerNotification,
-  ServerRequest,
   ToolAnnotations,
-} from '@modelcontextprotocol/sdk/types.js';
+  Transport,
+} from '@modelcontextprotocol/client';
+import type { ServerContext } from '@modelcontextprotocol/server';
 import type { z } from 'zod';
 
 import type { McpFeatureKind } from '../shared/constants/mcp-protocol.js';
@@ -91,7 +88,7 @@ export interface ToolDefinition<TContext> {
   readonly outputSchema?: z.ZodObject<z.ZodRawShape>;
   readonly annotations?: ToolAnnotations;
   readonly policy?: McpToolPolicy;
-  readonly handler: (invocation: McpInvocation<Record<string, unknown>, TContext>) => MaybePromise<CallToolResult>;
+  handler(invocation: McpInvocation<Record<string, unknown>, TContext>): MaybePromise<CallToolResult>;
 }
 
 /** Immutable runtime definition for a fixed-URI MCP resource. */
@@ -234,7 +231,7 @@ export interface McpTransportFactory {
 }
 
 /** MCP SDK request metadata supplied to registered feature callbacks. */
-export type SdkRequestExtra = RequestHandlerExtra<ServerRequest, ServerNotification>;
+export type SdkRequestExtra = ServerContext;
 
 /** Invokes one compiled MCP tool through the application boundary. */
 export type McpToolInvoker<TContext> = (

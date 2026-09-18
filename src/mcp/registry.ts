@@ -13,8 +13,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { ZodTypeAny } from 'zod';
-import { zodToJsonSchema } from 'zod-to-json-schema';
+import { z } from 'zod';
 
 import { McpFeatureKind, McpJsonSchemaReferenceStrategy } from '../shared/constants/mcp-protocol.js';
 import type {
@@ -181,9 +180,9 @@ function validateToolPolicy<TContext>(tool: Readonly<ToolDefinition<TContext>>):
  * @param schema - Runtime schema to serialize.
  * @returns JSON Schema without the redundant draft declaration.
  */
-function serializeSchema(schema: Readonly<ZodTypeAny>): Record<string, unknown> {
-  const { $schema: _schemaDeclaration, ...document } = zodToJsonSchema(schema, {
-    $refStrategy: McpJsonSchemaReferenceStrategy.INLINE,
+function serializeSchema(schema: Readonly<z.ZodType>): Record<string, unknown> {
+  const { $schema: _schemaDeclaration, ...document } = z.toJSONSchema(schema, {
+    reused: McpJsonSchemaReferenceStrategy.INLINE,
   });
   return document;
 }
