@@ -79,7 +79,7 @@ To prepare a release, run **Actions → Create release PR → Run workflow** on 
 
 Agents working in this repository should start with [AGENTS.md](AGENTS.md) for the architecture map, development commands, review rules, and documentation references.
 
-See the [documentation overview](docs/index.md), [runtime guide](docs/runtime.md), and [development guide](docs/development.md). Build the site with `python -m pip install -r requirements-docs.txt` and `python -m mkdocs build --strict`; preview it with `python -m mkdocs serve`.
+See the [documentation overview](docs/index.md), [architecture guide](docs/architecture.md), [runtime guide](docs/runtime.md), and [development guide](docs/development.md). Build the site with `python -m pip install -r requirements-docs.txt` and `python -m mkdocs build --strict`; preview it with `python -m mkdocs serve`.
 
 ## License
 

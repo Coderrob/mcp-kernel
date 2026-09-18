@@ -22,6 +22,7 @@ Read the relevant guide before changing its behavior, then verify details in the
 | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | What does the library provide?                                | [README.md](README.md), [overview](docs/index.md), [public exports](src/index.ts) |
 | How do I define features, start a server, and call it?        | [Getting started](docs/getting-started.md)                                        |
+| How are definitions, lifecycle, and SDK boundaries organized? | [Architecture](docs/architecture.md)                                              |
 | How do lifecycle, scopes, caching, timeouts, and errors work? | [Runtime and policies](docs/runtime.md)                                           |
 | How do I install, validate, build docs, or release?           | [Development](docs/development.md), [package scripts](package.json)               |
 | What did the initial review cover?                            | [Audit](docs/audit.md); historical evidence, not proof of current checks          |

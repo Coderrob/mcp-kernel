@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Added an architecture guide and lifecycle visual that document package ownership, feature compilation, registration, invocation, and protocol boundaries.
+
 ### Fixed
 
 - Connect the publishing workflow's `NPM_TOKEN` secret to npm authentication and document the required publishing setup.

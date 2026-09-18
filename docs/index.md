@@ -5,6 +5,7 @@
 `@coderrob/mcp-kernel` composes Model Context Protocol servers from typed tools, resources, prompts, and plugins. Applications supply their dependencies and authentication through the context factory and SDK transport.
 
 - [Getting started](getting-started.md): install the package and create a server.
+- [Architecture](architecture.md): understand package boundaries, feature compilation, lifecycle, and protocol integration.
 - [Runtime and policies](runtime.md): lifecycle, middleware, authorization, caching, and errors.
 - [Development](development.md): build, checks, documentation, and release validation.
 - [Audit](audit.md): reviewed areas, regression fixes, and verification limits.
