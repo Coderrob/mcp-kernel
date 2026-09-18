@@ -45,7 +45,7 @@ On Windows, replace `.venv/bin/python` with `.venv/Scripts/python.exe`. The gene
 
 ## CI and releases
 
-`.github/workflows/ci.yml` runs on pull requests, pushes to `main`, and manual dispatch. It verifies the package on Linux and Windows and runs an npm publishing dry run. A separate Python job builds the documentation in strict mode. New pushes cancel superseded runs for the same ref.
+`.github/workflows/ci.yml` runs on pull requests, pushes to `main`, and manual dispatch. It runs `yarn verify` on Linux and Windows, including an npm pack dry run that checks the package file allowlist. CI does not run `npm publish`, including its dry-run mode; publishing belongs to the release workflow. A separate Python job builds the documentation in strict mode. New pushes cancel superseded runs for the same ref.
 
 ### Prepare a release PR
 
