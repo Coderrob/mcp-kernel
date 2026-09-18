@@ -1,5 +1,9 @@
 # MCP Kernel
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Coderrob/mcp-kernel/main/docs/assets/mcp-kernel-logo.png" alt="MCP Kernel: modular teal K surrounding a golden core" width="680" />
+</p>
+
 `@coderrob/mcp-kernel` is a TypeScript application kernel for building Model Context Protocol servers. It provides schema-driven tools and prompts, resources, plugins, middleware, execution policies, deterministic manifests, transports, and an in-memory SDK test client.
 
 ## Install
@@ -72,6 +76,8 @@ To prepare a release, run **Actions → Create release PR → Run workflow** on 
 `yarn release:prepare revision` prepares the same files locally. `yarn release:publish` verifies and publishes the package with provenance from a configured publishing environment. See the [development guide](docs/development.md) for setup and command details.
 
 ## Documentation
+
+Agents working in this repository should start with [AGENTS.md](AGENTS.md) for the architecture map, development commands, review rules, and documentation references.
 
 See the [documentation overview](docs/index.md), [runtime guide](docs/runtime.md), and [development guide](docs/development.md). Build the site with `python -m pip install -r requirements-docs.txt` and `python -m mkdocs build --strict`; preview it with `python -m mkdocs serve`.
 

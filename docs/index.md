@@ -1,5 +1,7 @@
 # MCP Kernel
 
+![MCP Kernel: modular teal K surrounding a golden core](assets/mcp-kernel-logo.png)
+
 `@coderrob/mcp-kernel` composes Model Context Protocol servers from typed tools, resources, prompts, and plugins. Applications supply their dependencies and authentication through the context factory and SDK transport.
 
 - [Getting started](getting-started.md): install the package and create a server.
