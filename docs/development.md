@@ -65,6 +65,13 @@ The repository must allow GitHub Actions to create pull requests under **Setting
 
 ### Publish the merged version
 
-After merging the release PR, publish a GitHub release tagged `vX.Y.Z` at the merge commit. `.github/workflows/publish.yml` checks that the tag matches `package.json`, then runs `yarn release:publish` in the `npm` environment. Configure npm trusted publishing for this workflow and any desired environment protections.
+After merging the release PR, publish a GitHub release tagged `vX.Y.Z` at the merge commit. `.github/workflows/publish.yml` checks that the tag matches `package.json`, then runs `yarn release:publish` in the `npm` environment. The tag must match exactly (for example, `v0.1.1`, without a commit suffix).
+
+Configure one of these authentication options before publishing:
+
+- **Token:** create an npm granular access token with read/write permission for the package or its scope and the permissions needed for unattended publishing. In GitHub, open **Settings → Environments → npm → Environment secrets** and add it as `NPM_TOKEN`. The publish step maps this secret to `NODE_AUTH_TOKEN`; no token belongs in repository files. The npm account must have permission to publish `@coderrob/mcp-kernel`, and package publishing settings must allow token authentication. See [npm token setup](https://docs.npmjs.com/creating-and-viewing-access-tokens/).
+- **Trusted publishing:** configure a GitHub Actions trusted publisher in the npm package settings with owner `Coderrob`, repository `mcp-kernel`, workflow filename `publish.yml`, and environment `npm`. Allow direct `npm publish`. Leave `NPM_TOKEN` unset when using this option; the workflow already grants `id-token: write`. This requires the npm-side trust configuration, not just the workflow file. See [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/).
+
+The workflow starts when a GitHub release is published; pushing a tag alone does not trigger it. Authentication must be configured before that run. Configure any desired protection rules on the GitHub `npm` environment.
 
 `yarn release:publish` runs the full verification suite and publishes with public access and provenance. It is intended for the configured GitHub publishing environment. The command uses `--ignore-scripts` after verification to avoid executing verification twice. Direct `npm publish` still runs the `prepublishOnly` verification hook. There is deliberately no script named `publish`: npm treats that name as a lifecycle hook, which could recursively call publication. `yarn publish:check` remains the non-publishing dry run.

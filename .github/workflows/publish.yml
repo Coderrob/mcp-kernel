@@ -31,4 +31,7 @@ jobs:
           const { version } = JSON.parse(readFileSync('package.json', 'utf8'));
           assert.equal(process.env.RELEASE_TAG, `v${version}`, 'Release tag must match package.json');
           NODE
-      - run: yarn release:publish
+      - name: Publish to npm
+        run: yarn release:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
