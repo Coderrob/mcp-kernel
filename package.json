@@ -1,6 +1,6 @@
 {
   "name": "@coderrob/mcp-kernel",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A type-safe application kernel for composing Model Context Protocol servers.",
   "license": "GPL-3.0-only",
   "author": "Robert Lindley",

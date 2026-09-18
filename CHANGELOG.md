@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-09-18
+
 ### Changed
 
 - Refreshed dependency resolution against the npm registry, retaining compatible TypeScript 5 and Zod 3 versions and Yarn's release-age gate.
@@ -43,5 +45,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Added middleware, lifecycle management, execution policies, deterministic manifests, stdio transport support, and an in-memory test client.
 - Added ESM, CommonJS, and bundled declaration outputs with npm package and downstream-consumer verification.
 
-[Unreleased]: https://github.com/Coderrob/mcp-kernel/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Coderrob/mcp-kernel/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/Coderrob/mcp-kernel/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/Coderrob/mcp-kernel/releases/tag/v0.1.0
