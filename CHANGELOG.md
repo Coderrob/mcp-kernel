@@ -6,21 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-19
+
 ### Added
 
 - Added an architecture guide and lifecycle visual that document package ownership, feature compilation, registration, invocation, and protocol boundaries.
 
 ### Changed
 
-- Upgrade to version 2 of the MCP TypeScript SDK, including its split server and client packages, nested request context, Standard Schema registration, and Zod 4.2 requirement. This changes the package's MCP and Zod peer dependencies and requires a major release.
+- Rework the README and getting-started guide around a runnable application factory, consumer ownership, and the 0.1.x-to-0.2.0 migration path.
+- Move documentation asset maintenance guidance into the development guide.
+- Upgrade to version 2 of the MCP TypeScript SDK, including its split server and client packages, nested request context, Standard Schema registration, and Zod 4.2 requirement. This is a breaking peer-dependency change from 0.1.x.
 - Generate deterministic manifests with Zod 4's built-in JSON Schema converter.
 
 ### Removed
 
+- Remove the unused logo-generation prompt from the documentation assets.
 - Remove the v1 `@modelcontextprotocol/sdk` peer and the obsolete `zod-to-json-schema` runtime dependency.
 
 ### Fixed
 
+- Correct the protocol-test example to create a fresh application instance instead of reusing the already-started stdio server.
 - Remove the npm publish dry run from CI so pull requests and main-branch verification succeed when the current package version is already published; retain package validation through `yarn verify`.
 - Connect the publishing workflow's `NPM_TOKEN` secret to npm authentication and document the required publishing setup.
 
@@ -63,6 +69,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Added middleware, lifecycle management, execution policies, deterministic manifests, stdio transport support, and an in-memory test client.
 - Added ESM, CommonJS, and bundled declaration outputs with npm package and downstream-consumer verification.
 
-[Unreleased]: https://github.com/Coderrob/mcp-kernel/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/Coderrob/mcp-kernel/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Coderrob/mcp-kernel/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/Coderrob/mcp-kernel/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/Coderrob/mcp-kernel/releases/tag/v0.1.0

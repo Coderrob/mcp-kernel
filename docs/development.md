@@ -43,6 +43,8 @@ python -m venv .venv
 
 On Windows, replace `.venv/bin/python` with `.venv/Scripts/python.exe`. The generated `site/` directory is ignored by Git and is excluded from the npm package. The strict build fails on documentation warnings, including broken internal links.
 
+Keep diagrams and the logo in `docs/assets/`. The [lifecycle visual](assets/tool-lifecycle.png) explains the architecture guide, and the [logo](assets/mcp-kernel-logo.png) appears on the documentation home page. When replacing an asset, check its labels against current behavior, verify readability at documentation width, provide meaningful Markdown alt text, and optimize large binaries. The surrounding Markdown remains the accessible source of operational detail.
+
 ## CI and releases
 
 `.github/workflows/ci.yml` runs on pull requests, pushes to `main`, and manual dispatch. It runs `yarn verify` on Linux and Windows, including an npm pack dry run that checks the package file allowlist. CI does not run `npm publish`, including its dry-run mode; publishing belongs to the release workflow. A separate Python job builds the documentation in strict mode. New pushes cancel superseded runs for the same ref.
@@ -57,6 +59,8 @@ In GitHub, open **Actions → Create release PR → Run workflow**, select the d
 | `minor`    | 1.3.0              |
 | `revision` | 1.2.4              |
 
+While the package is in initial `0.y.z` development, a minor increment can include incompatible changes. Version `0.2.0` changes the MCP SDK and Zod peer requirements; release notes and consumer migration guidance must identify that break. Once the public API is stable at `1.0.0`, use a major increment for incompatible API changes.
+
 The workflow updates `package.json`, assigns the Unreleased notes to the new dated version, updates comparison links, and adds a fresh empty Unreleased section. It refreshes the lockfile, runs `yarn verify`, and opens or updates the single `release/next` PR. Rerunning it before merge recalculates the release from the latest default branch. Empty Unreleased sections and malformed version or changelog data fail before either release file is changed.
 
 For local preparation, run `yarn release:prepare revision` (or `major`/`minor`), then `yarn install --mode=update-lockfile` and `yarn verify`. Preparation does not commit, tag, or publish. Continue adding changes to Unreleased after the release PR is merged.
@@ -65,7 +69,7 @@ The repository must allow GitHub Actions to create pull requests under **Setting
 
 ### Publish the merged version
 
-After merging the release PR, publish a GitHub release tagged `vX.Y.Z` at the merge commit. `.github/workflows/publish.yml` checks that the tag matches `package.json`, then runs `yarn release:publish` in the `npm` environment. The tag must match exactly (for example, `v0.1.1`, without a commit suffix).
+After merging the release PR, publish a GitHub release tagged `vX.Y.Z` at the merge commit. `.github/workflows/publish.yml` checks that the tag matches `package.json`, then runs `yarn release:publish` in the `npm` environment. The tag must match exactly (for example, `v0.2.0`, without a commit suffix).
 
 Configure one of these authentication options before publishing:
 

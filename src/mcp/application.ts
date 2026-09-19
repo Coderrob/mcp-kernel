@@ -71,26 +71,6 @@ const STARTUP_FAILURE_REASON = 'startup-failure';
 const UNSTARTED_TRANSPORT_NAME = 'not-started';
 
 /**
- * Returns a new map with one entry replaced while preserving insertion order.
- * @param entries - Existing bounded state.
- * @param key - Entry key to replace.
- * @param value - Replacement value.
- * @returns Immutable replacement for the supplied map state.
- */
-function replaceMapEntry<TKey, TValue>(
-  entries: ReadonlyMap<TKey, TValue>,
-  key: TKey,
-  value: TValue
-): Map<TKey, TValue> {
-  return new Map(
-    Array.from(
-      entries,
-      /** Replaces the matching entry. */ ([entryKey, entryValue]) => [entryKey, entryKey === key ? value : entryValue]
-    )
-  );
-}
-
-/**
  * Returns bounded map state containing a newly inserted entry.
  * @param entries - Existing bounded state.
  * @param entry - New key and value pair.
@@ -666,9 +646,7 @@ export class McpApplication<TContext> implements McpFeatureRuntime<TContext> {
     const cached = this.cache.get(key);
     if (!cached) return undefined;
     if (cached.expiresAt > Date.now()) return cached.result;
-    this.cache = new Map(
-      Array.from(this.cache).filter(/** Removes the expired cache key. */ ([entryKey]) => entryKey !== key)
-    );
+    this.cache.delete(key);
     return undefined;
   }
 
@@ -731,7 +709,7 @@ export class McpApplication<TContext> implements McpFeatureRuntime<TContext> {
       return;
     }
     if (existing.count >= policy.maxRequests) throw new McpRateLimitError(existing.resetsAt - now);
-    this.rateLimits = replaceMapEntry(this.rateLimits, key, { ...existing, count: existing.count + 1 });
+    this.rateLimits.set(key, { ...existing, count: existing.count + 1 });
   }
 
   /**
@@ -775,12 +753,11 @@ export class McpApplication<TContext> implements McpFeatureRuntime<TContext> {
    */
   private invalidateCache(tags: readonly string[] | undefined): void {
     if (!tags?.length) return;
-    this.cache = new Map(
-      Array.from(this.cache).filter(
-        /** Retains entries that do not match an invalidated cache tag. */ ([, entry]) =>
-          !entry.tags.some(/** Determines whether any item satisfies the predicate. */ (tag) => tags.includes(tag))
-      )
-    );
+    for (const [key, entry] of this.cache) {
+      if (entry.tags.some(/** Matches a tag selected for invalidation. */ (tag) => tags.includes(tag))) {
+        this.cache.delete(key);
+      }
+    }
   }
 
   /**

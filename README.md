@@ -7,15 +7,25 @@
   <img src="https://raw.githubusercontent.com/Coderrob/mcp-kernel/main/docs/assets/mcp-kernel-logo.png" alt="MCP Kernel: modular teal K surrounding a golden core" width="680" />
 </p>
 
-`@coderrob/mcp-kernel` is a TypeScript application kernel for building Model Context Protocol servers. It provides schema-driven tools and prompts, resources, plugins, middleware, execution policies, deterministic manifests, transports, and an in-memory SDK test client.
+`@coderrob/mcp-kernel` is a TypeScript library for composing Model Context Protocol (MCP) servers. Define tools, resources, and prompts with Zod schemas; group them into plugins; and run them through one lifecycle, middleware, and policy boundary. It is a library for applications to use, not a server executable.
+
+| The kernel provides                                                                    | Your application provides                                         |
+| -------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Feature registration, manifests, lifecycle, and transport integration                  | Service clients, credentials, and business logic                  |
+| Middleware, tool authorization scopes, timeouts, rate limits, and local result caching | Authentication and deployment-specific authorization              |
+| Native MCP results and an in-memory SDK test client                                    | A process entry point and integration tests for external services |
 
 ## Install
 
+Use Node.js 24.15 or newer. Install MCP Kernel with the v2 server and client SDK packages and Zod 4.2 or newer:
+
 ```bash
-npm install @coderrob/mcp-kernel @modelcontextprotocol/server @modelcontextprotocol/client zod@^4.2.0
+npm install @coderrob/mcp-kernel@^0.2.0 @modelcontextprotocol/server@^2 @modelcontextprotocol/client@^2 zod@^4.2.0
 ```
 
-The package requires Node.js 24.15 or newer and uses version 2 of the official MCP TypeScript SDK. It publishes ESM and CommonJS entry points with bundled TypeScript declarations.
+Upgrading from `0.1.x` requires replacing the v1 `@modelcontextprotocol/sdk` peer with the v2 server and client packages and upgrading Zod 3 to 4. See the [v0.1.1 README](https://github.com/Coderrob/mcp-kernel/blob/v0.1.1/README.md) for the older release.
+
+The package exports ESM and CommonJS entry points with bundled TypeScript declarations. Consumers import from `@coderrob/mcp-kernel` only.
 
 ## Create a server
 
@@ -30,7 +40,7 @@ interface AppContext {
 const hello = defineTool<AppContext>()({
   name: 'hello_user',
   description: 'Create a greeting.',
-  inputSchema: z.object({ name: z.string().min(1) }),
+  inputSchema: z.object({ name: z.string().min(1) }).strict(),
   outputSchema: z.object({ message: z.string() }),
   annotations: { readOnlyHint: true },
   handler: ({ input, context }) => jsonResult({ message: `${context.greeting}, ${input.name}` }),
@@ -45,44 +55,20 @@ const app = createMcpServer<AppContext>({
 await app.start(stdioTransport());
 ```
 
-Handlers receive validated input, the application context, and request metadata. Tool policies support timeouts, required scopes, per-principal rate limits, result caching, and cache invalidation.
+Use [Getting started](docs/getting-started.md) for a complete server entry point and a protocol test that creates a separate application instance. Stdio reserves stdout for MCP messages; write operational logs to stderr. A consuming application owns its service dependencies and calls `app.stop()` during shutdown.
 
-## Public API
+## Explore the package
 
-The package root exports:
+- [Getting started](docs/getting-started.md) covers installation from this branch, server startup, and a working protocol test.
+- [Architecture](docs/architecture.md) explains the SDK boundary, feature compilation, and cleanup ownership.
+- [Runtime and policies](docs/runtime.md) covers middleware, scopes, timeouts, caching, results, and cancellation.
+- [Development](docs/development.md) covers verification, documentation builds, and releases.
 
-- application lifecycle: `createMcpServer` and `McpApplication`;
-- authoring: `defineTool`, `defineResource`, `defineResourceTemplate`, `definePrompt`, and `definePlugin`;
-- middleware: `composeMiddleware` and `requestLogging`;
-- results and errors: `jsonResult`, `textResult`, `errorResult`, and the `McpHarnessError` hierarchy;
-- transports: `defineTransport` and `stdioTransport`;
-- testing: `connectTestClient`, which uses the official SDK's linked in-memory transport;
-- logging: the `Logger` contract, `noopLogger`, and `createStderrLogger`;
-- named contracts and stable protocol enums used by these APIs.
+The package root exports `createMcpServer`, feature and plugin builders, middleware helpers, result and error types, transport factories, `connectTestClient`, logging helpers, and their named contracts. The [public export file](src/index.ts) is the authoritative API list.
 
-Only the package root is a supported import path. Internal source paths are intentionally absent from `exports` so the implementation can evolve without breaking consumers.
+## Contribute
 
-## Development and release
-
-```bash
-corepack yarn install --immutable
-corepack yarn verify
-corepack yarn publish:check
-```
-
-`verify` runs formatting, linting, production and test type checking, architecture and circular-dependency checks, Knip, per-file coverage, the dual-format build, a downstream type/runtime consumer check, and an npm tarball allowlist check. `publish:check` additionally runs npm's publish dry run.
-
-Publishing is limited to `dist`, `README.md`, `CHANGELOG.md`, `LICENSE`, and package metadata. Releases are intended to follow semantic versioning; update `CHANGELOG.md` before tagging a release.
-
-To prepare a release, run **Actions → Create release PR → Run workflow** on `main` and choose `major`, `minor`, or `revision` (patch). The workflow versions the Unreleased notes, creates a fresh Unreleased section, verifies the package, and opens or updates the release PR. Merge it, then publish a GitHub release with the matching `vX.Y.Z` tag to trigger npm publishing.
-
-`yarn release:prepare revision` prepares the same files locally. `yarn release:publish` verifies and publishes the package with provenance from a configured publishing environment. See the [development guide](docs/development.md) for setup and command details.
-
-## Documentation
-
-Agents working in this repository should start with [AGENTS.md](AGENTS.md) for the architecture map, development commands, review rules, and documentation references.
-
-See the [documentation overview](docs/index.md), [architecture guide](docs/architecture.md), [runtime guide](docs/runtime.md), and [development guide](docs/development.md). Build the site with `python -m pip install -r requirements-docs.txt` and `python -m mkdocs build --strict`; preview it with `python -m mkdocs serve`.
+Read [AGENTS.md](AGENTS.md) for repository boundaries and review rules. Run `corepack yarn install --immutable` followed by `corepack yarn verify`; verification includes per-file coverage thresholds of 95% for statements, branches, functions, and lines. See the [development guide](docs/development.md) for the full check and release workflow.
 
 ## License
 
