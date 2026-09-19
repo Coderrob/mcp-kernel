@@ -10,6 +10,17 @@ import { nextVersion, prepareRelease, versionChangelog } from './release.mjs';
 
 const DATE = '2026-09-17';
 const CLI_PATH = fileURLToPath(new URL('./prepare-release.mjs', import.meta.url));
+const PACKAGE_ROOT = fileURLToPath(new URL('../', import.meta.url));
+const PUBLISH_WORKFLOW = await readFile(new URL('../.github/workflows/publish.yml', import.meta.url), 'utf8');
+const PUBLISH_TAG_CHECK = PUBLISH_WORKFLOW.match(/node --input-type=module <<'NODE'\n([\s\S]*?)\n\s+NODE/)?.[1].replace(
+  /^ {10}/gm,
+  ''
+);
+const { version: PACKAGE_VERSION } = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
+const RELEASE_COMMIT = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: PACKAGE_ROOT, encoding: 'utf8' }).stdout.trim();
+const FIRST_HEX_DIGIT = 'a';
+const SECOND_HEX_DIGIT = 'b';
+const WRONG_SHORT_SHA = `${RELEASE_COMMIT[0] === FIRST_HEX_DIGIT ? SECOND_HEX_DIGIT : FIRST_HEX_DIGIT}${RELEASE_COMMIT.slice(1, 7)}`;
 const CHANGELOG = `# Changelog
 
 ## [Unreleased]
@@ -121,5 +132,26 @@ describe('release preparation', () => {
     } finally {
       await rm(directory, { recursive: true, force: true });
     }
+  });
+});
+
+describe('publish workflow tag verification', () => {
+  it.each([
+    [`v${PACKAGE_VERSION}_${RELEASE_COMMIT.slice(0, 7)}`, 0],
+    [`v${PACKAGE_VERSION}`, 1],
+    [`v999.0.0_${RELEASE_COMMIT.slice(0, 7)}`, 1],
+    [`v${PACKAGE_VERSION}_${WRONG_SHORT_SHA}`, 1],
+    [`v${PACKAGE_VERSION}_${RELEASE_COMMIT.slice(0, 8)}`, 1],
+    [`v${PACKAGE_VERSION}_zzzzzzz`, 1],
+  ])('should verify release tag %s against package and commit', (tag, status) => {
+    expect(PUBLISH_TAG_CHECK).toBeDefined();
+    const result = spawnSync(process.execPath, ['--input-type=module'], {
+      cwd: PACKAGE_ROOT,
+      encoding: 'utf8',
+      env: { ...process.env, RELEASE_TAG: tag },
+      input: PUBLISH_TAG_CHECK,
+      timeout: 10_000,
+    });
+    expect(result.status).toBe(status);
   });
 });

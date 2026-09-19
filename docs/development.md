@@ -69,7 +69,7 @@ The repository must allow GitHub Actions to create pull requests under **Setting
 
 ### Publish the merged version
 
-After merging the release PR, publish a GitHub release tagged `vX.Y.Z` at the merge commit. `.github/workflows/publish.yml` checks that the tag matches `package.json`, then runs `yarn release:publish` in the `npm` environment. The tag must match exactly (for example, `v0.2.0`, without a commit suffix).
+After merging the release PR, publish a GitHub release at the merge commit with a tag formatted `vX.Y.Z_<first seven commit SHA characters>` (for example, `v0.2.0_d11bce2`). `.github/workflows/publish.yml` checks that the version prefix matches `package.json` and the suffix matches the tagged commit before running `yarn release:publish` in the `npm` environment. The release title may remain the plain version, such as `v0.2.0`.
 
 Configure one of these authentication options before publishing:
 
@@ -77,5 +77,13 @@ Configure one of these authentication options before publishing:
 - **Trusted publishing:** configure a GitHub Actions trusted publisher in the npm package settings with owner `Coderrob`, repository `mcp-kernel`, workflow filename `publish.yml`, and environment `npm`. Allow direct `npm publish`. Leave `NPM_TOKEN` unset when using this option; the workflow already grants `id-token: write`. This requires the npm-side trust configuration, not just the workflow file. See [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/).
 
 The workflow starts when a GitHub release is published; pushing a tag alone does not trigger it. Authentication must be configured before that run. Configure any desired protection rules on the GitHub `npm` environment.
+
+If a publish run fails before npm publication and the tagged commit still matches the release, merge the workflow fix before retrying. A rerun uses the workflow from the original tag and cannot pick up a newer fix on `main`. The manual recovery path uses the current workflow, checks out the existing published release tag, verifies its version and commit suffix, and then publishes:
+
+```bash
+gh workflow run publish.yml --ref main -f release_tag=v0.2.0_d11bce2
+```
+
+Check the npm registry first so an already-published version is not submitted twice.
 
 `yarn release:publish` runs the full verification suite and publishes with public access and provenance. It is intended for the configured GitHub publishing environment. The command uses `--ignore-scripts` after verification to avoid executing verification twice. Direct `npm publish` still runs the `prepublishOnly` verification hook. There is deliberately no script named `publish`: npm treats that name as a lifecycle hook, which could recursively call publication. `yarn publish:check` remains the non-publishing dry run.

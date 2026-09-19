@@ -65,4 +65,4 @@ jobs:
             - Start a fresh Unreleased section for subsequent work.
             - Run formatting, lint, type checks, build, tests with per-file coverage, and package checks.
 
-            After merging, publish a GitHub release tagged `v${{ steps.release.outputs.version }}` at the merge commit to trigger npm publishing.
+            After merging, publish a GitHub release tagged `v${{ steps.release.outputs.version }}_<first seven merge-commit SHA characters>` at the merge commit to trigger npm publishing.

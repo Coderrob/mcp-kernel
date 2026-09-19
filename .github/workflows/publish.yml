@@ -3,6 +3,12 @@ name: Publish
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing published SHA-suffixed release tag to retry
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -13,24 +19,41 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: npm
+    concurrency:
+      group: npm-publish-${{ github.event.release.tag_name || inputs.release_tag }}
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.release_tag }}
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .node-version
           registry-url: https://registry.npmjs.org
       - run: corepack enable
       - run: yarn install --immutable
-      - name: Verify release tag matches package version
+      - name: Verify release tag matches package version and commit
         env:
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
         run: |
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict';
+          import { execFileSync } from 'node:child_process';
           import { readFileSync } from 'node:fs';
           const { version } = JSON.parse(readFileSync('package.json', 'utf8'));
-          assert.equal(process.env.RELEASE_TAG, `v${version}`, 'Release tag must match package.json');
+          const prefix = `v${version}_`;
+          assert.ok(process.env.RELEASE_TAG?.startsWith(prefix), `Release tag must start with ${prefix}`);
+          const shortSha = process.env.RELEASE_TAG.slice(prefix.length);
+          assert.match(shortSha, /^[0-9a-f]{7}$/, 'Release tag must end with seven hexadecimal SHA characters');
+          const commit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+          assert.ok(commit.startsWith(shortSha), 'Release tag SHA must match the tagged commit');
           NODE
+      - name: Verify release is published
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          test "$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}" --jq '.draft == false and .published_at != null')" = true
       - name: Publish to npm
         run: yarn release:publish
         env:

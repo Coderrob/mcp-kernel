@@ -95,7 +95,7 @@ Record user-visible behavior changes in `CHANGELOG.md` under Unreleased. The man
 
 For local preparation use `yarn release:prepare revision` (or the other increments), then `yarn install --mode=update-lockfile` and `yarn verify`. Preparation does not commit, tag, or publish. See [the release guide](docs/development.md#ci-and-releases) for the complete workflow.
 
-`yarn publish:check` is a dry run. `yarn release:publish` actually publishes to npm; use it only for a task requesting publication. Publishing a GitHub release with a matching `vX.Y.Z` tag triggers `publish.yml` after the release PR is merged.
+`yarn publish:check` is a dry run. `yarn release:publish` actually publishes to npm; use it only for a task requesting publication. Publishing a GitHub release tagged `vX.Y.Z_<first seven merge-commit SHA characters>` triggers `publish.yml` after the release PR is merged. The workflow checks both the package version and tag SHA before publishing.
 
 Before handing off, review the diff for unintended changes and report what changed, which checks actually ran, and any remaining failures or limits. Keep this file accurate when commands or architecture change; put detailed explanations in the linked documentation.
 
