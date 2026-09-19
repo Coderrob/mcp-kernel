@@ -11,7 +11,6 @@ nav:
   - Architecture: architecture.md
   - Runtime and policies: runtime.md
   - Development: development.md
-  - Documentation assets: assets/README.md
   - Audit: audit.md
 validation:
   nav:
