@@ -73,6 +73,29 @@ describe('McpRegistry', () => {
     });
   });
 
+  it('should serialize Zod 4 schemas inline without a draft declaration', () => {
+    const shared = z.object({ id: z.string() });
+    const nested = defineTool<object>()({
+      name: 'nested_value',
+      description: 'Serialize reused schemas inline.',
+      inputSchema: z.object({ left: shared, right: shared }),
+      handler: () => jsonResult({ ok: true }),
+    });
+    const registry = new McpRegistry([definePlugin({ name: 'schema_plugin', version: '1.0.0', features: [nested] })]);
+
+    const [feature] = registry.manifest({ name: 'server', version: '2.0.0' }).features;
+    expect(feature.inputSchema).toMatchObject({
+      type: 'object',
+      properties: {
+        left: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] },
+        right: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] },
+      },
+      required: ['left', 'right'],
+    });
+    expect(feature.inputSchema).not.toHaveProperty('$schema');
+    expect(feature.inputSchema).not.toHaveProperty('$defs');
+  });
+
   it.each([
     ['invalid plugin name', [definePlugin({ name: '_bad', version: '1', features: [] })]],
     ['missing plugin version', [definePlugin({ name: 'valid_plugin', version: ' ', features: [] })]],

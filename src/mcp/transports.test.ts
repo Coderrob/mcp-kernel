@@ -12,8 +12,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
+import { InMemoryTransport } from '@modelcontextprotocol/server';
 import { describe, expect, it } from 'vitest';
 
 import { McpTransportName } from '../shared/constants/mcp-protocol.js';

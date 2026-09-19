@@ -12,8 +12,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
-import type { CallToolResult, GetPromptResult } from '@modelcontextprotocol/sdk/types.js';
+import type { CallToolResult, GetPromptResult } from '@modelcontextprotocol/server';
 import type { z } from 'zod';
 
 import { McpFeatureKind } from '../shared/constants/mcp-protocol.js';
@@ -28,7 +27,7 @@ import type {
   ToolDefinition,
 } from '../types/mcp.js';
 
-type ToolDefinitionInput<TContext, TInputSchema extends z.AnyZodObject> = Omit<
+type ToolDefinitionInput<TContext, TInputSchema extends z.ZodObject<z.ZodRawShape>> = Omit<
   ToolDefinition<TContext>,
   'kind' | 'inputSchema' | 'handler'
 > & {
@@ -95,7 +94,7 @@ export function defineResourceTemplate<TContext>(
  */
 export function defineTool<TContext>() {
   return /** Freezes a tool definition while preserving schema-driven input inference. */ <
-    TInputSchema extends z.AnyZodObject,
+    TInputSchema extends z.ZodObject<z.ZodRawShape>,
   >(
     definition: Readonly<ToolDefinitionInput<TContext, TInputSchema>>
   ): ToolDefinition<TContext> => {

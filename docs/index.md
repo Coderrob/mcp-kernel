@@ -10,7 +10,7 @@
 - [Development](development.md): build, checks, documentation, and release validation.
 - [Audit](audit.md): reviewed areas, regression fixes, and verification limits.
 
-The supported import path is `@coderrob/mcp-kernel`. The package provides ESM, CommonJS, and bundled TypeScript declarations. It requires Node.js 24.15 or newer, MCP SDK 1.30.x or a compatible 1.x version, and Zod 3.25.x.
+The supported import path is `@coderrob/mcp-kernel`. The package provides ESM, CommonJS, and bundled TypeScript declarations. It requires Node.js 24.15 or newer, the MCP TypeScript SDK 2.x server and client packages, and Zod 4.2 or newer.
 
 Keep service clients, domain schemas, and authentication configuration in the consuming application.
 

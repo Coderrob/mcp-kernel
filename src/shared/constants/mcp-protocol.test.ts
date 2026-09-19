@@ -30,7 +30,7 @@ describe('MCP protocol constants', () => {
     expect(Object.values(McpApplicationState)).toEqual(['created', 'starting', 'running', 'stopping', 'stopped']);
     expect(McpContentType.TEXT).toBe('text');
     expect(Object.values(McpFeatureKind)).toEqual(['tool', 'resource', 'resource-template', 'prompt']);
-    expect(McpJsonSchemaReferenceStrategy.INLINE).toBe('none');
+    expect(McpJsonSchemaReferenceStrategy.INLINE).toBe('inline');
     expect(Object.values(McpTransportName)).toEqual(['stdio', 'in-memory']);
     expect(DEFAULT_MCP_CACHE_CAPACITY).toBe(1000);
     expect(DEFAULT_MCP_RATE_LIMIT_CAPACITY).toBe(10_000);
