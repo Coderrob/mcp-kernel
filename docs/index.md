@@ -2,16 +2,19 @@
 
 ![MCP Kernel: modular teal K surrounding a golden core](assets/mcp-kernel-logo.png)
 
-`@coderrob/mcp-kernel` composes Model Context Protocol servers from typed tools, resources, prompts, and plugins. Applications supply their dependencies and authentication through the context factory and SDK transport.
+`@coderrob/mcp-kernel` helps a TypeScript application compose an MCP server from typed tools, resources, prompts, and plugins. It manages feature registration, lifecycle, middleware, tool policies, protocol results, and an in-memory SDK test connection. Your application remains responsible for domain integrations, credentials, authentication, and its executable entry point.
 
-- [Getting started](getting-started.md): install the package and create a server.
-- [Architecture](architecture.md): understand package boundaries, feature compilation, lifecycle, and protocol integration.
-- [Runtime and policies](runtime.md): lifecycle, middleware, authorization, caching, and errors.
-- [Development](development.md): build, checks, documentation, and release validation.
-- [Audit](audit.md): reviewed areas, regression fixes, and verification limits.
+Version `0.2.0` uses the MCP TypeScript SDK v2 server and client packages and Zod 4. For the earlier SDK v1 release, see the [v0.1.1 documentation](https://github.com/Coderrob/mcp-kernel/blob/v0.1.1/README.md).
 
-The supported import path is `@coderrob/mcp-kernel`. The package provides ESM, CommonJS, and bundled TypeScript declarations. It requires Node.js 24.15 or newer, the MCP TypeScript SDK 2.x server and client packages, and Zod 4.2 or newer.
+## Choose your next step
 
-Keep service clients, domain schemas, and authentication configuration in the consuming application.
+| Goal                                                                                   | Guide                                 |
+| -------------------------------------------------------------------------------------- | ------------------------------------- |
+| Create a server and test it through MCP                                                | [Getting started](getting-started.md) |
+| Understand what the kernel owns                                                        | [Architecture](architecture.md)       |
+| Configure middleware, authorization scopes, caching, rate limits, timeouts, and errors | [Runtime and policies](runtime.md)    |
+| Verify, package, or release a change                                                   | [Development](development.md)         |
 
-Licensed under [GPL-3.0-only](https://github.com/Coderrob/mcp-kernel/blob/main/LICENSE).
+The supported consumer import path is `@coderrob/mcp-kernel`. The package provides ESM, CommonJS, and bundled TypeScript declarations. It requires Node.js 24.15 or newer on this branch.
+
+The [audit](audit.md) records historical review findings and verification limits; use current tests and CI to assess the latest code. The package is licensed under [GPL-3.0-only](https://github.com/Coderrob/mcp-kernel/blob/main/LICENSE).
