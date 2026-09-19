@@ -12,10 +12,10 @@
 ## Install
 
 ```bash
-npm install @coderrob/mcp-kernel @modelcontextprotocol/sdk zod@^3.25.0
+npm install @coderrob/mcp-kernel @modelcontextprotocol/server @modelcontextprotocol/client zod@^4.2.0
 ```
 
-The package requires Node.js 24.15 or newer. It publishes ESM and CommonJS entry points with bundled TypeScript declarations.
+The package requires Node.js 24.15 or newer and uses version 2 of the official MCP TypeScript SDK. It publishes ESM and CommonJS entry points with bundled TypeScript declarations.
 
 ## Create a server
 

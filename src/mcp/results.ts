@@ -12,8 +12,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
+import type { CallToolResult } from '@modelcontextprotocol/server';
 
 import { McpContentType } from '../shared/constants/mcp-protocol.js';
 import { McpErrorCode, McpHarnessError } from './errors.js';

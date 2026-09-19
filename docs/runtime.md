@@ -20,7 +20,7 @@ Handlers receive `input`, `context`, and `request`. Request metadata includes th
 
 Authorization is checked before the cache. Cache entries are isolated by principal ID by default; `varyByPrincipal: false` explicitly shares results. Anonymous requests have a separate identity from every authenticated principal, including a principal literally named `anonymous`.
 
-The transport supplies SDK `authInfo`; the kernel uses its `clientId` as the principal ID and copies its scopes. Use unique IDs for identities that must not share cached data or rate limits. Scope checks do not authenticate tokens themselves. Resources and prompts do not have tool policies; apply their authorization in middleware or handlers.
+The transport supplies the v2 SDK's `http.authInfo`; the kernel uses its `clientId` as the principal ID and copies its scopes. Use unique IDs for identities that must not share cached data or rate limits. Scope checks do not authenticate tokens themselves. Resources and prompts do not have tool policies; apply their authorization in middleware or handlers.
 
 Cache and rate-limit state is local to the application and bounded by `cacheCapacity` and `rateLimitCapacity`. These options require positive safe integers. Old records may be evicted at capacity, so local rate limits are not a durable or distributed abuse-prevention system. Cached tools should use JSON-compatible input values and results. Avoid caching results that vary with mutable authorization attributes under a single principal ID.
 

@@ -12,9 +12,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
-import { McpServer, ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js';
-import type { CallToolResult, ListResourcesResult } from '@modelcontextprotocol/sdk/types.js';
+import type { CallToolResult, ListResourcesResult } from '@modelcontextprotocol/server';
+import { McpServer, ResourceTemplate } from '@modelcontextprotocol/server';
 
 import { McpFeatureKind } from '../shared/constants/mcp-protocol.js';
 import type {
@@ -64,9 +63,9 @@ function registerPromptFeature<TContext>(
     {
       title: feature.title,
       description: feature.description,
-      argsSchema: feature.argsSchema.shape,
+      argsSchema: feature.argsSchema,
     },
-    /** Invokes the registered prompt. */ async (input, extra) => runtime.invokePrompt(compiled, input, extra)
+    /** Invokes the registered prompt. */ async (input, ctx) => runtime.invokePrompt(compiled, input, ctx)
   );
 }
 
@@ -86,7 +85,7 @@ function registerResourceFeature<TContext>(
     feature.name,
     feature.uri,
     { title: feature.title, description: feature.description, mimeType: feature.mimeType },
-    /** Invokes the registered fixed resource. */ async (uri, extra) => runtime.invokeResource(compiled, uri, extra)
+    /** Invokes the registered fixed resource. */ async (uri, ctx) => runtime.invokeResource(compiled, uri, ctx)
   );
 }
 
@@ -106,8 +105,8 @@ function registerResourceTemplateFeature<TContext>(
     feature.name,
     createSdkResourceTemplate(compiled, runtime),
     { title: feature.title, description: feature.description, mimeType: feature.mimeType },
-    /** Invokes the registered parameterized resource. */ async (uri, variables, extra) =>
-      runtime.invokeResourceTemplate(compiled, uri, variables, extra)
+    /** Invokes the registered parameterized resource. */ async (uri, variables, ctx) =>
+      runtime.invokeResourceTemplate(compiled, uri, variables, ctx)
   );
 }
 
@@ -172,7 +171,7 @@ function registerToolFeature<TContext>(
     },
     /** Invokes the registered harness tool. */ async (
       input: Readonly<Record<string, unknown>>,
-      extra: Readonly<SdkRequestExtra>
-    ): Promise<CallToolResult> => runtime.invokeTool(compiled, input, extra, true)
+      ctx: Readonly<SdkRequestExtra>
+    ): Promise<CallToolResult> => runtime.invokeTool(compiled, input, ctx, true)
   );
 }

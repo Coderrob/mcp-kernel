@@ -3,7 +3,7 @@
 ## Install
 
 ```bash
-npm install @coderrob/mcp-kernel @modelcontextprotocol/sdk zod@^3.25.0
+npm install @coderrob/mcp-kernel @modelcontextprotocol/server @modelcontextprotocol/client zod@^4.2.0
 ```
 
 Use Node.js 24.15 or newer and TypeScript with NodeNext module resolution for an ESM application.

@@ -12,8 +12,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { McpServer } from '@modelcontextprotocol/server';
 import { describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 
@@ -32,11 +31,15 @@ import { registerSdkFeatures } from './sdk-adapter.js';
 
 describe('registerSdkFeatures', () => {
   it('should register every feature kind with the SDK server', () => {
+    const toolInputSchema = z.object({ id: z.string() });
+    const toolOutputSchema = z.object({ value: z.string() });
+    const promptArgsSchema = z.object({ topic: z.string() });
     const features = [
       defineTool<object>()({
         name: 'read_value',
         description: 'Read a value.',
-        inputSchema: z.object({ id: z.string() }),
+        inputSchema: toolInputSchema,
+        outputSchema: toolOutputSchema,
         handler: () => jsonResult({ ok: true }),
       }),
       defineResource<object>({ name: 'fixed_resource', uri: 'test://fixed', handler: () => ({ contents: [] }) }),
@@ -53,7 +56,7 @@ describe('registerSdkFeatures', () => {
       }),
       definePrompt<object>()({
         name: 'explain_prompt',
-        argsSchema: z.object({ topic: z.string() }),
+        argsSchema: promptArgsSchema,
         handler: () => ({ messages: [] }),
       }),
     ];
@@ -75,7 +78,17 @@ describe('registerSdkFeatures', () => {
     registerSdkFeatures(server, compiled, runtime);
 
     expect(registerTool).toHaveBeenCalledTimes(1);
+    expect(registerTool).toHaveBeenCalledWith(
+      'read_value',
+      expect.objectContaining({ inputSchema: toolInputSchema, outputSchema: toolOutputSchema }),
+      expect.any(Function)
+    );
     expect(registerResource).toHaveBeenCalledTimes(3);
     expect(registerPrompt).toHaveBeenCalledTimes(1);
+    expect(registerPrompt).toHaveBeenCalledWith(
+      'explain_prompt',
+      expect.objectContaining({ argsSchema: promptArgsSchema }),
+      expect.any(Function)
+    );
   });
 });

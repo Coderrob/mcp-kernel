@@ -43,7 +43,7 @@ export enum McpFeatureKind {
 
 /** JSON Schema reference strategies supported by manifest serialization. */
 export enum McpJsonSchemaReferenceStrategy {
-  INLINE = 'none',
+  INLINE = 'inline',
 }
 
 /** Built-in transport names exposed in request metadata and diagnostics. */

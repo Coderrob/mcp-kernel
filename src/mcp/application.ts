@@ -12,14 +12,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type {
   CallToolResult,
   GetPromptResult,
   ListResourcesResult,
   ReadResourceResult,
-} from '@modelcontextprotocol/sdk/types.js';
+} from '@modelcontextprotocol/server';
+import { McpServer } from '@modelcontextprotocol/server';
 import { ZodError } from 'zod';
 
 import {
@@ -148,7 +147,7 @@ interface InvocationCancellation {
  * @returns The operation result.
  */
 function buildPrincipal(extra: Readonly<SdkRequestExtra>): McpPrincipal | undefined {
-  const auth = extra.authInfo;
+  const auth = extra.http?.authInfo;
   if (!auth) return undefined;
   return {
     id: auth.clientId,
@@ -301,7 +300,7 @@ export class McpApplication<TContext> implements McpFeatureRuntime<TContext> {
     extra: Readonly<SdkRequestExtra>,
     inputValidated = false
   ): Promise<CallToolResult> {
-    const requestId = String(extra.requestId);
+    const requestId = String(extra.mcpReq.id);
     try {
       const parsed = inputValidated ? input : this.parseToolInput(compiled.feature, input);
       return await this.executeFeature(
@@ -544,14 +543,14 @@ export class McpApplication<TContext> implements McpFeatureRuntime<TContext> {
       controller.abort();
     };
     this.rootController.signal.addEventListener(ABORT_EVENT_NAME, abort, { once: true });
-    extra.signal.addEventListener(ABORT_EVENT_NAME, abort, { once: true });
-    if (this.rootController.signal.aborted || extra.signal.aborted) abort();
+    extra.mcpReq.signal.addEventListener(ABORT_EVENT_NAME, abort, { once: true });
+    if (this.rootController.signal.aborted || extra.mcpReq.signal.aborted) abort();
     return {
       controller,
       /** Removes cancellation listeners owned by this invocation. */
       dispose: (): void => {
         this.rootController.signal.removeEventListener(ABORT_EVENT_NAME, abort);
-        extra.signal.removeEventListener(ABORT_EVENT_NAME, abort);
+        extra.mcpReq.signal.removeEventListener(ABORT_EVENT_NAME, abort);
       },
     };
   }
@@ -569,7 +568,7 @@ export class McpApplication<TContext> implements McpFeatureRuntime<TContext> {
     controller: Readonly<AbortController>
   ): McpRequestContext {
     return {
-      id: String(extra.requestId),
+      id: String(extra.mcpReq.id),
       feature: compiled.feature.name,
       plugin: compiled.plugin.name,
       transport: this.transportName,

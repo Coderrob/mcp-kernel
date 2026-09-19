@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- Upgrade to version 2 of the MCP TypeScript SDK, including its split server and client packages, nested request context, Standard Schema registration, and Zod 4.2 requirement. This changes the package's MCP and Zod peer dependencies and requires a major release.
+- Generate deterministic manifests with Zod 4's built-in JSON Schema converter.
+
+### Removed
+
+- Remove the v1 `@modelcontextprotocol/sdk` peer and the obsolete `zod-to-json-schema` runtime dependency.
+
 ### Fixed
 
 - Remove the npm publish dry run from CI so pull requests and main-branch verification succeed when the current package version is already published; retain package validation through `yarn verify`.
