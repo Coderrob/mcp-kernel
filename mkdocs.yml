@@ -8,8 +8,10 @@ theme:
 nav:
   - Home: index.md
   - Getting started: getting-started.md
+  - Architecture: architecture.md
   - Runtime and policies: runtime.md
   - Development: development.md
+  - Documentation assets: assets/README.md
   - Audit: audit.md
 validation:
   nav:

@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Added an architecture guide and lifecycle visual that document package ownership, feature compilation, registration, invocation, and protocol boundaries.
+
 ### Changed
 
 - Upgrade to version 2 of the MCP TypeScript SDK, including its split server and client packages, nested request context, Standard Schema registration, and Zod 4.2 requirement. This changes the package's MCP and Zod peer dependencies and requires a major release.
