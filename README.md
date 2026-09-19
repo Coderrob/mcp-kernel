@@ -1,5 +1,8 @@
 # MCP Kernel
 
+[![npm version](https://img.shields.io/npm/v/%40coderrob%2Fmcp-kernel)](https://www.npmjs.com/package/@coderrob/mcp-kernel)
+[![Code coverage threshold: at least 95% per file](https://img.shields.io/badge/coverage_threshold-%E2%89%A595%25-brightgreen)](https://github.com/Coderrob/mcp-kernel/blob/main/vitest.config.mjs)
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/Coderrob/mcp-kernel/main/docs/assets/mcp-kernel-logo.png" alt="MCP Kernel: modular teal K surrounding a golden core" width="680" />
 </p>
