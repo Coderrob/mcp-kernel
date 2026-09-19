@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Removed
 
+- Remove the unused logo-generation prompt from the documentation assets.
 - Remove the v1 `@modelcontextprotocol/sdk` peer and the obsolete `zod-to-json-schema` runtime dependency.
 
 ### Fixed

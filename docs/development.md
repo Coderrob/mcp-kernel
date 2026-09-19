@@ -43,7 +43,7 @@ python -m venv .venv
 
 On Windows, replace `.venv/bin/python` with `.venv/Scripts/python.exe`. The generated `site/` directory is ignored by Git and is excluded from the npm package. The strict build fails on documentation warnings, including broken internal links.
 
-Keep diagrams and the logo in `docs/assets/`. The [lifecycle visual](assets/tool-lifecycle.png) explains the architecture guide; the [logo](assets/mcp-kernel-logo.png) appears on the documentation home page, and its [source prompt](assets/logo-prompt.txt) records its provenance. When replacing an asset, check its labels against current behavior, verify readability at documentation width, provide meaningful Markdown alt text, and optimize large binaries. The surrounding Markdown remains the accessible source of operational detail.
+Keep diagrams and the logo in `docs/assets/`. The [lifecycle visual](assets/tool-lifecycle.png) explains the architecture guide, and the [logo](assets/mcp-kernel-logo.png) appears on the documentation home page. When replacing an asset, check its labels against current behavior, verify readability at documentation width, provide meaningful Markdown alt text, and optimize large binaries. The surrounding Markdown remains the accessible source of operational detail.
 
 ## CI and releases
 
